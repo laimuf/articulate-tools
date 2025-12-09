@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Course - Understanding BitB Attack</title>
+    <style>
+        body {
+            /* Full screen container */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0088cc; /* Example background color */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        .start-container {
+            padding: 30px;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .start-button {
+            background-color: #2D7C4F; /* Dark green for contrast */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .start-button:hover {
+            background-color: #235a3a;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-container">
+        <h1>Welcome to the Security Training!</h1>
+        <p>This module covers the **Browser-in-the-Browser (BitB) Attack** and how to protect yourself. Click below to begin the course.</p>
+        <button class="start-button" onclick="launchCourse()">Start Training</button>
+    </div>
+
+    <script>
+        function launchCourse() {
+            // REDIRECTS to the renamed Rise core file.
+            window.location.href = 'rise_core.html';
+        }
+    </script>
+</body>
+</html>
