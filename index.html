@@ -59,8 +59,13 @@
 
     <script>
         function launchCourse() {
-            // REDIRECTS to the renamed Rise core file.
-            window.location.href = 'rise_core.html';
+            // This is the message Rise 360's internal script is listening for (as seen in your image snippet).
+            const messageToRise = 'trigger-continue-button';
+            
+            // postMessage is used to communicate from an iframe (your embedded content)
+            // to its parent frame (the Rise 360 lesson page).
+            // '*' is used as the target origin for compatibility, as Rise 360's origin is known.
+            window.parent.postMessage(messageToRise, '*');
         }
     </script>
 </body>
