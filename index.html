@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start Course - Understanding BitB Attack</title>
+    <title>Spotting and Handling BitB Attacks</title>
     <style>
         body {
             /* Full screen container */
@@ -12,20 +12,43 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #0088cc; /* Example background color */
+            background-color: #128c2f;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: white;
             text-align: center;
         }
 
         .start-container {
+            display: flex;
+            gap: 40px;
             padding: 30px;
-            max-width: 600px;
+            max-width: 1200px;
+            width: 100%;
+            align-items: flex-start;
+            box-sizing: border-box;
+        }
+
+        .content-left {
+            flex: 1;
+            text-align: left;
+            min-width: 0;
+        }
+
+        .content-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-width: 0;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: nowrap;
         }
 
         p {
@@ -33,31 +56,232 @@
             margin-bottom: 40px;
         }
 
+        .description-list {
+            text-align: left;
+            font-size: 1.05em;
+            margin: 30px auto;
+            display: inline-block;
+        }
+
+        .description-list li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .learn-heading {
+            text-align: left;
+            font-size: 1.1em;
+            margin: 30px auto 0px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .click-text {
+            font-size: 1.05em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
         .start-button {
-            background-color: #2D7C4F; /* Dark green for contrast */
-            color: white;
+            background: none;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            padding: 0;
+            width: 160px;
+            height: 160px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            transition: filter 0.3s ease, transform 0.3s ease;
+            margin-top: 30px;
         }
 
         .start-button:hover {
-            background-color: #235a3a;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)) brightness(1.1);
+            animation-play-state: paused;
+        }
+
+        .start-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive design for tablets and smaller screens */
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .start-container {
+                flex-direction: column;
+                gap: 30px;
+                padding: 20px;
+                width: auto;
+            }
+
+            .content-left {
+                text-align: center;
+                width: 100%;
+            }
+
+            .content-right {
+                width: 100%;
+            }
+
+            .start-button {
+                width: 140px;
+                height: 140px;
+                margin-top: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+                white-space: normal;
+            }
+
+            p {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .learn-heading {
+                font-size: 1em;
+                display: block;
+            }
+
+            .description-list {
+                font-size: 0.95em;
+                margin: 15px auto;
+            }
+
+            .click-text {
+                font-size: 0.95em;
+            }
+        }
+
+        /* Responsive design for mobile devices */
+        @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+            }
+
+            .start-container {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px;
+                max-width: 100%;
+                width: auto;
+            }
+
+            .content-left {
+                text-align: center;
+                width: 100%;
+            }
+
+            .content-right {
+                width: 100%;
+            }
+
+            .start-button {
+                width: 120px;
+                height: 120px;
+                margin-top: 20px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+                margin-bottom: 12px;
+                white-space: normal;
+            }
+
+            p {
+                font-size: 0.95em;
+                margin-bottom: 25px;
+            }
+
+            .learn-heading {
+                font-size: 0.95em;
+                display: block;
+            }
+
+            .description-list {
+                font-size: 0.9em;
+                margin: 10px auto;
+            }
+
+            .click-text {
+                font-size: 0.9em;
+                margin-top: 8px;
+                margin-bottom: 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="start-container">
-        <h1>Welcome to the Security Training!</h1>
-        <p>This module covers the **Browser-in-the-Browser (BitB) Attack** and how to protect yourself. Click below to begin the course.</p>
-        <button class="start-button" onclick="launchCourse()">Start Training</button>
+        <div class="content-left">
+            <h1>Spotting and Handling BitB Attacks</h1>
+            <p class="learn-heading"><strong>What You'll Learn:</strong></p>
+            <ul class="description-list">
+                <li>The tricks cybercriminals use in Browser-in-the-Browser (BitB) attacks.</li>
+                <li>Practical steps to protect yourself and your organisation from BitB attacks.</li>
+            </ul>
+        </div>
+        <div class="content-right">
+            <button class="start-button" id="startBtn" onclick="launchCourse()">
+                <img src="assets/monster.svg" alt="Start Training">
+            </button>
+            <p class="click-text"><em>Click the monster to begin the course.</em></p>
+        </div>
     </div>
 
     <script>
+        // Create audio context for siren beep sound
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSirenBeep() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Start with low frequency and sweep up for siren effect
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(1200, audioContext.currentTime + 0.2);
+            oscillator.type = 'sine';
+            
+            // Envelope: quick attack, decay
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // Add event listeners to the button
+        const startBtn = document.getElementById('startBtn');
+        
+        startBtn.addEventListener('mouseenter', function() {
+            playSirenBeep();
+        });
+
+        startBtn.addEventListener('click', function() {
+            playSirenBeep();
+        });
+
         function launchCourse() {
             // This is the message Rise 360's internal script is listening for (as seen in your image snippet).
             const messageToRise = 'trigger-continue-button';
