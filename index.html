@@ -20,7 +20,7 @@
 
         .start-container {
             display: flex;
-            gap: 40px;
+            gap: 80px;
             padding: 30px;
             max-width: 1200px;
             width: 100%;
@@ -41,11 +41,13 @@
             align-items: center;
             justify-content: flex-start;
             min-width: 0;
+            margin-top: 100px;
         }
 
         h1 {
-            font-size: 2.5em;
+            font-size: 3em;
             margin-bottom: 20px;
+            margin-top: -50px;
             word-wrap: break-word;
             overflow-wrap: break-word;
             white-space: nowrap;
@@ -61,11 +63,15 @@
             font-size: 1.05em;
             margin: 30px auto;
             display: inline-block;
+            list-style-position: inside;
         }
 
         .description-list li {
             margin-bottom: 15px;
             line-height: 1.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .learn-heading {
@@ -136,6 +142,7 @@
 
             .content-right {
                 width: 100%;
+                margin-top: 0;
             }
 
             .start-button {
@@ -165,6 +172,12 @@
                 margin: 15px auto;
             }
 
+            .description-list li {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+
             .click-text {
                 font-size: 0.95em;
             }
@@ -192,6 +205,7 @@
 
             .content-right {
                 width: 100%;
+                margin-top: 0;
             }
 
             .start-button {
@@ -221,6 +235,12 @@
                 margin: 10px auto;
             }
 
+            .description-list li {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+
             .click-text {
                 font-size: 0.9em;
                 margin-top: 8px;
@@ -232,10 +252,10 @@
 <body>
     <div class="start-container">
         <div class="content-left">
-            <h1>Spotting and Handling BitB Attacks</h1>
+            <h1>Spotting and Handling<br>Browser-in-the-Browser (BitB) Attacks</h1>
             <p class="learn-heading"><strong>What You'll Learn:</strong></p>
             <ul class="description-list">
-                <li>The tricks cybercriminals use in Browser-in-the-Browser (BitB) attacks.</li>
+                <li>The tricks cybercriminals use in BitB attacks.</li>
                 <li>Practical steps to protect yourself and your organisation from BitB attacks.</li>
             </ul>
         </div>
