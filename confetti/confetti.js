@@ -1,5 +1,6 @@
 (function () {
     let confettiLoaded = false;
+    let applauseAudio = null;
 
     function loadConfetti(callback) {
         if (confettiLoaded && window.confetti) {
@@ -19,22 +20,33 @@
         script.onload = function () {
             confettiLoaded = true;
             callback();
-        }
-
-            ;
+        };
 
         script.onerror = function () {
             console.error('Failed to load canvas-confetti library');
+        };
+        
+        document.head.appendChild(script);
+    }
+
+    function playApplauseSound() {
+        // Create audio element if it doesn't exist
+        if (!applauseAudio) {
+            applauseAudio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/crowd-applause-113728.mp3');
+            applauseAudio.volume = 0.5; // Set volume to 50%
         }
 
-            ;
-        document.head.appendChild(script);
+        // Reset and play the sound
+        applauseAudio.currentTime = 0;
+        applauseAudio.play().catch(error => {
+            console.warn('Failed to play applause sound:', error);
+        });
     }
 
     function fireConfetti() {
         const triggerConfetti = () => {
             // Check for reduced motion preference
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const prefersReducedMotion = window.matchMedia('(prefers-reduce-motion: reduce)').matches;
 
             if (prefersReducedMotion) {
                 console.log('Confetti disabled due to user motion preferences');
@@ -48,23 +60,18 @@
                     "startVelocity": 45,
                     "gravity": 0.8,
                     "scalar": 1,
-                    "colors": ["#e7f4ea",
-                        "#118c2f",
-                        "#ffffff"
-                    ],
-                    "shapes": ["square",
-                        "circle"
-
-                    ],
+                    "colors": ["#e7f4ea", "#118c2f", "#ffffff"],
+                    "shapes": ["square", "circle"],
                     "origin": {
                         "x": 0.5,
                         "y": 0.5
                     }
                 });
-            }
-        }
 
-            ;
+                // Play applause sound
+                playApplauseSound();
+            }
+        };
 
         loadConfetti(triggerConfetti);
     }
@@ -115,10 +122,10 @@
 
     // Try to attach immediately in case the block is already loaded
     if (!attachConfettiEvents()) {
-
         // If immediate attachment failed, start observing
         observer.observe(document.body, {
-            childList: true, subtree: true
+            childList: true,
+            subtree: true
         });
     }
 })();
