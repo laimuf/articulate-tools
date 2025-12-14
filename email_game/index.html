@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>Email Scenario</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                background: #E8F4EA;
+                padding: 20px;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            /* INBOX VIEW */
+            .inbox-view {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .inbox-header {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .inbox-header h2 {
+                color: #333;
+                font-size: 24px;
+            }
+
+            .inbox-instruction {
+                background: #e3f2fd;
+                border-left: 4px solid #0066cc;
+                padding: 15px;
+                border-radius: 4px;
+                margin-top: 15px;
+                font-size: 14px;
+                color: #0066cc;
+            }
+
+            .email-item {
+                background: white;
+                border-radius: 8px;
+                padding: 15px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .email-item:hover {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .email-icon {
+                position: relative;
+                font-size: 60px; /* MODIFIED: Increased envelope icon size */
+                min-width: 70px; /* Adjusted min-width to accommodate larger icon */
+                text-align: center;
+            }
+
+            .badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #2d7c4f;
+                color: white;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: bold;
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    box-shadow: 0 0 0 0 rgba(45, 124, 79, 0.7);
+                }
+
+                50% {
+                    box-shadow: 0 0 0 10px rgba(45, 124, 79, 0);
+                }
+            }
+
+            /* NEW: Independent style for subject line icon */
+            .subject-icon {
+                font-size: 24px; /* Set specific size for the ⚠️ icon */
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+
+
+            .email-content {
+                flex: 1;
+            }
+
+            .email-from {
+                font-weight: bold;
+                color: #2d1515ff;
+                font-size: 16px;
+            }
+
+            .email-subject {
+                color: #666;
+                font-size: 14px;
+                margin-top: 5px;
+            }
+
+            /* EMAIL VIEW */
+            .email-view {
+                display: none;
+            }
+
+            .email-view.active {
+                display: block;
+            }
+
+            .back-button {
+                background: none;
+                padding: 0;
+                border: none;
+                cursor: pointer;
+                font-size: 14px;
+                color: #2d7c4f;
+                font-weight: bold;
+                margin-bottom: 15px;
+                transition: all 0.3s ease;
+            }
+
+            .back-button:hover {
+                opacity: 0.7;
+            }
+
+            .email-interface {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                margin-bottom: 30px;
+            }
+
+            .email-header {
+                background: #f8f8f8;
+                padding: 15px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .email-from {
+                font-size: 14px;
+                color: #666;
+            }
+
+            .email-from strong {
+                color: #666;
+            }
+
+            .email-subject {
+                font-size: 16px;
+                font-weight: bold;
+                color: #128c2f;
+                margin: 20px 0;
+            }
+
+            .email-body {
+                padding: 20px;
+            }
+
+            .greeting {
+                margin-bottom: 15px;
+            }
+
+            .email-text {
+                margin-bottom: 15px;
+                color: #333;
+            }
+
+            .cta-button {
+                display: inline-block;
+                background: #2d7c4f;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: bold;
+                margin: 15px 0;
+                border: none;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .cta-button:hover {
+                background: #235a3a;
+            }
+
+            .email-footer {
+                font-size: 12px;
+                color: #999;
+                border-top: 1px solid #e0e0e0;
+                padding: 15px;
+                background: #f8f8f8;
+            }
+
+            .decision-section {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .decision-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 15px;
+                color: #333;
+            }
+
+            .choice-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .choice-btn {
+                padding: 15px;
+                border: 2px solid #ddd;
+                background: white;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+                text-align: left;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .choice-btn:hover {
+                border-color: #0066cc;
+                background: #f0f7ff;
+            }
+
+            .choice-btn:active {
+                transform: scale(0.98);
+            }
+
+            .feedback {
+                margin-top: 20px;
+                padding: 15px;
+                border-radius: 6px;
+                display: none;
+                font-size: 14px;
+            }
+
+            .feedback.show {
+                display: block;
+            }
+
+            /* 🟢 SUCCESS COLOR (Best Choice: Verify) */
+            .feedback.success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            /* 🟠 CAUTION COLOR (Medium Quality: Delete) - NEW */
+            .feedback.caution {
+                background: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffeeba;
+            }
+
+            /* 🔴 FAILURE COLOR (Worst Choice: Click) */
+            .feedback.failure {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+            .warning-icon {
+                font-size: 28px; /* MODIFIED: Increased decision button icon size */
+                margin-right: 8px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div
+                class="inbox-view"
+                id="inboxView"
+            >
+                <div
+                    class="email-item"
+                    onclick="openEmail()"
+                >
+                    <div class="email-icon">
+                        ✉️
+                        <div class="badge">1</div>
+                    </div>
+                    <div class="email-content">
+                        <div class="email-from">Human Resources</div>
+                        <div class="email-subject">
+                            <span class="subject-icon">⚠️</span> URGENT: Update
+                            Your Benefits
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="email-view"
+                id="emailView"
+            >
+                <button
+                    class="back-button"
+                    onclick="goBack()"
+                >
+                    ← Back to Inbox
+                </button>
+
+                <div class="email-interface">
+                    <div class="email-header">
+                        <div class="email-from">
+                            From: <strong>hr-benefits@verogroup</strong>
+                        </div>
+                        <div class="email-from">To: amina@verogroup.com</div>
+                        <div class="email-subject">
+                            <span class="subject-icon">⚠️</span> URGENT: Update
+                            Your Benefits
+                        </div>
+                    </div>
+                    <div class="email-body">
+                        <div class="greeting">Hello,</div>
+
+                        <div class="email-text">
+                            Please review the attached document for details
+                            about your updated benefits package and accept the
+                            changes by <strong>end of business today</strong>.
+                        </div>
+
+                        <button
+                            class="cta-button"
+                            onclick="handleDecision('click')"
+                        >
+                            Review Benefits Now
+                        </button>
+
+                        <div
+                            class="email-text"
+                            style="margin-top: 20px;"
+                        >
+                            Best regards,<br />
+                            <strong>HR Benefits Team</strong><br />
+                            Human Resources Department
+                        </div>
+                    </div>
+                    <div class="email-footer">
+                        This is an automated message. Please do not reply to
+                        this email.
+                    </div>
+                </div>
+
+                <div class="decision-section">
+                    <div class="decision-title">What do you do?</div>
+                    <div class="choice-buttons">
+                        <button
+                            class="choice-btn"
+                            onclick="handleDecision('click')"
+                        >
+                            <span class="warning-icon">🔗</span> Click the link
+                            to review the benefits
+                        </button>
+                        <button
+                            class="choice-btn"
+                            onclick="handleDecision('verify')"
+                        >
+                            <span class="warning-icon">⏸️</span> Pause and
+                            contact HR directly to verify this email
+                        </button>
+                        <button
+                            class="choice-btn"
+                            onclick="handleDecision('delete')"
+                        >
+                            <span class="warning-icon">🗑️</span> Delete the
+                            email and ignore it
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="feedbackBox"
+                    class="feedback"
+                ></div>
+            </div>
+        </div>
+
+        <script>
+            // Initialize AudioContext
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // =================================================================
+            // 1. SOUND FUNCTIONS (Web Audio API)
+            // =================================================================
+
+            function playWrongAnswer() {
+                const context = audioContext;
+                const currentTime = context.currentTime;
+                
+                // Create two descending tones for that classic "game show wrong answer" sound
+                const duration = 0.6;
+                
+                // First tone - higher pitch
+                const osc1 = context.createOscillator();
+                const gain1 = context.createGain();
+                osc1.connect(gain1);
+                gain1.connect(context.destination);
+                
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(400, currentTime);
+                osc1.frequency.exponentialRampToValueAtTime(200, currentTime + 0.3);
+                gain1.gain.setValueAtTime(0.3, currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.05, currentTime + 0.3);
+                
+                osc1.start(currentTime);
+                osc1.stop(currentTime + 0.3);
+                
+                // Second tone - lower pitch, slightly delayed
+                const osc2 = context.createOscillator();
+                const gain2 = context.createGain();
+                osc2.connect(gain2);
+                gain2.connect(context.destination);
+                
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(300, currentTime + 0.15);
+                osc2.frequency.exponentialRampToValueAtTime(100, currentTime + 0.5);
+                gain2.gain.setValueAtTime(0.3, currentTime + 0.15);
+                gain2.gain.exponentialRampToValueAtTime(0.05, currentTime + 0.5);
+                
+                osc2.start(currentTime + 0.15);
+                osc2.stop(currentTime + 0.5);
+                
+                // Optional: Add a buzzer-like "error" sound on top
+                const buzz = context.createOscillator();
+                const buzzGain = context.createGain();
+                buzz.connect(buzzGain);
+                buzzGain.connect(context.destination);
+                
+                buzz.type = 'square';
+                buzz.frequency.setValueAtTime(150, currentTime);
+                buzz.frequency.linearRampToValueAtTime(140, currentTime + 0.5);
+                buzzGain.gain.setValueAtTime(0.15, currentTime);
+                buzzGain.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.5);
+                
+                buzz.start(currentTime);
+                buzz.stop(currentTime + 0.5);
+                }
+
+            
+            
+            function playDingChime() {
+                const context = audioContext;
+                const currentTime = context.currentTime;
+
+                function createTone(freq, detune, duration, startVol, context) {
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+
+                    // Ding Chime: Sine wave with long decay
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(freq, currentTime);
+                    oscillator.detune.setValueAtTime(detune, currentTime);
+
+                    gainNode.gain.setValueAtTime(0.01, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(startVol, currentTime + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
+
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + duration);
+                }
+                
+                const dingDuration = 1.5;
+                createTone(880, 0, dingDuration, 0.4, context); 
+                createTone(880, 10, dingDuration, 0.4, context);
+            }
+
+            function playMouseClick() {
+                const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/computer-mouse-click-02-383961.mp3');
+                audio.volume = 0.5; // Adjust volume if too loud
+                audio.play().catch(err => console.log('Audio play failed:', err));
+            }
+
+            function playSuccess() {
+                const context = audioContext;
+                const currentTime = context.currentTime;
+                const duration = 1.5; // snappy success sound
+
+                // Create a High-Pass Filter for a bright, metallic chime sound
+                const filter = context.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.setValueAtTime(2000, currentTime); // Cut off frequencies below 2000Hz
+
+                // Function to create a single tone (now includes connecting to the filter)
+                function createTone(midiNote, duration, startVol) {
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    // Convert MIDI note number to frequency (e.g., 60 is Middle C)
+                    const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
+
+                    // Connect nodes: Oscillator -> Gain -> Filter -> Destination
+                    oscillator.connect(gainNode);
+                    gainNode.connect(filter);
+                    filter.connect(context.destination);
+
+                    // Ding Chime: Sine wave for a clean bell tone
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(freq, currentTime);
+
+                    // Volume Envelope: Quick attack, immediate drop for crispness
+                    gainNode.gain.setValueAtTime(0.001, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(startVol, currentTime + 0.01); // Instant peak
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration); // Fast, triumphant decay
+
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + duration);
+                }
+                
+                // Play a quick, festive major chord (C6 - E6 - G6)
+                // MIDI Notes: C6=84, E6=88, G6=91
+                createTone(84, duration, 0.4);
+                createTone(88, duration, 0.4);
+                createTone(91, duration, 0.4);
+            }
+
+            
+
+            // =================================================================
+            // 2. SCENARIO LOGIC (CALLING SOUNDS)
+            // =================================================================
+
+            function openEmail() {
+                document.getElementById('inboxView').style.display = 'none';
+                document.getElementById('emailView').classList.add('active');
+                
+                // Play Retro Jump sound when opening the email
+                // playRetroJump();
+                playMouseClick();
+            }
+
+            function goBack() {
+                document.getElementById('inboxView').style.display = 'flex';
+                document.getElementById('emailView').classList.remove('active');
+                document.getElementById('feedbackBox').className = 'feedback';
+                document.getElementById('feedbackBox').innerHTML = '';
+            }
+
+            function handleDecision(choice) {
+                const feedbackBox = document.getElementById('feedbackBox');
+
+                let feedback = '';
+                let status = '';
+
+                if (choice === 'click') {
+                    // Play Laser Shot sound for wrong/failure action
+                    playWrongAnswer(); 
+
+                    feedback = `
+                        <strong style="font-size: 16px;">❌ You've Been Compromised</strong>
+                        <p style="margin-top: 10px;">This was a phishing email. You clicked the link, went to the fake website, and entered your details. The attacker now has your password, controls your work account, and accesses company data.</p>
+                    `;
+                    status = 'failure';
+                } else if (choice === 'verify') {
+                    // Play Ding Chime sound for correct/success action
+                    playSuccess(); 
+
+                    feedback = `
+                        <strong style="font-size: 16px;">✓ Smart Move! (Best Practice)</strong>
+                        <p style="margin-top: 10px;">You paused before clicking and decided to verify. You contacted HR directly using a phone number from your company directory (not from the email). HR confirmed: <strong>This email is a phishing attack.</strong></p>
+                    `;
+                    status = 'success';
+                } else if (choice === 'delete') {
+                    playDingChime(); 
+                    feedback = `
+                        <strong style="font-size: 16px;">⚠️ Safe, but Not Best Practice</strong>
+                        <p style="margin-top: 10px;">You deleted the suspicious email and moved on. You avoided clicking the link, which kept your credentials safe.</p>
+                        <p style="margin-top: 10px;">Always report suspicious emails to IT. Reporting helps them identify threats and protect other employees who might fall for it.</p>
+                    `;
+                    status = 'caution';
+                }
+
+                feedbackBox.innerHTML = feedback;
+                feedbackBox.className = `feedback show ${status}`;
+
+                setTimeout(() => {
+                    feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        </script>
+    </body>
+</html>

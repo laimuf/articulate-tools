@@ -12,9 +12,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #128c2f;
+            background-color: white;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: white;
+            color: #128c2f;
             text-align: center;
         }
 
@@ -296,6 +296,20 @@
             oscillator.stop(audioContext.currentTime + 0.2);
         }
 
+        function playNotificationWithDelay(delayMs = 1000) {
+        setTimeout(() => {
+            const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/new-notification-022-370046.mp3');
+            audio.volume = 1;
+            audio.play();
+        }, delayMs);
+        }
+
+        function playMouseClick() {
+                const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/computer-mouse-click-02-383961.mp3');
+                audio.volume = 0.5; // Adjust volume if too loud
+                audio.play().catch(err => console.log('Audio play failed:', err));
+            }
+
         // Add event listeners to the button
         const startBtn = document.getElementById('startBtn');
         
@@ -304,7 +318,8 @@
         });
 
         startBtn.addEventListener('click', function() {
-            playSirenBeep();
+            playMouseClick();
+            playNotificationWithDelay(700);
         });
 
         function launchCourse() {
