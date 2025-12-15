@@ -1,6 +1,8 @@
 # articulate-tools
-Collection of code snippets for articulate products
+Collection of code snippets and assets for Articulate products.
 
+
+Checkout the courses in [my portfolio](https://www.lailafm.com) ☺️
 
 ## Intro page with continue button interaction
 
