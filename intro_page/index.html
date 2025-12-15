@@ -6,17 +6,22 @@
     <title>Spotting and Handling BitB Attacks</title>
     <style>
         body {
-            /* Full screen container */
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: white;
+
+            background-image: url("https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/backgrounds/intro_page_bitb.svg");
+            background-size: cover;        /* fill screen */
+            background-position: center;   /* center image */
+            background-repeat: no-repeat;  /* no tiling */
+
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #128c2f;
             text-align: center;
         }
+  
 
         .start-container {
             display: flex;
@@ -258,11 +263,6 @@
     <div class="start-container">
         <div class="content-left">
             <h1>Detect and Defend Against<br>Browser-in-the-Browser Attacks</h1>
-            <p class="learn-heading"><strong>What You'll Learn:</strong></p>
-            <ul class="description-list">
-                <li>The tricks cybercriminals use in Browser-in-the-Browser (BitB) attacks.</li>
-                <li>Practical steps to protect yourself and your organisation from BitB attacks.</li>
-            </ul>
         </div>
         <div class="content-right">
             <button class="start-button" id="startBtn" onclick="launchCourse()">
