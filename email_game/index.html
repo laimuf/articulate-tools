@@ -428,88 +428,17 @@
             // =================================================================
 
             function playWrongAnswer() {
-                const context = audioContext;
-                const currentTime = context.currentTime;
-                
-                // Create two descending tones for that classic "game show wrong answer" sound
-                const duration = 0.6;
-                
-                // First tone - higher pitch
-                const osc1 = context.createOscillator();
-                const gain1 = context.createGain();
-                osc1.connect(gain1);
-                gain1.connect(context.destination);
-                
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(400, currentTime);
-                osc1.frequency.exponentialRampToValueAtTime(200, currentTime + 0.3);
-                gain1.gain.setValueAtTime(0.3, currentTime);
-                gain1.gain.exponentialRampToValueAtTime(0.05, currentTime + 0.3);
-                
-                osc1.start(currentTime);
-                osc1.stop(currentTime + 0.3);
-                
-                // Second tone - lower pitch, slightly delayed
-                const osc2 = context.createOscillator();
-                const gain2 = context.createGain();
-                osc2.connect(gain2);
-                gain2.connect(context.destination);
-                
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(300, currentTime + 0.15);
-                osc2.frequency.exponentialRampToValueAtTime(100, currentTime + 0.5);
-                gain2.gain.setValueAtTime(0.3, currentTime + 0.15);
-                gain2.gain.exponentialRampToValueAtTime(0.05, currentTime + 0.5);
-                
-                osc2.start(currentTime + 0.15);
-                osc2.stop(currentTime + 0.5);
-                
-                // Optional: Add a buzzer-like "error" sound on top
-                const buzz = context.createOscillator();
-                const buzzGain = context.createGain();
-                buzz.connect(buzzGain);
-                buzzGain.connect(context.destination);
-                
-                buzz.type = 'square';
-                buzz.frequency.setValueAtTime(150, currentTime);
-                buzz.frequency.linearRampToValueAtTime(140, currentTime + 0.5);
-                buzzGain.gain.setValueAtTime(0.15, currentTime);
-                buzzGain.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.5);
-                
-                buzz.start(currentTime);
-                buzz.stop(currentTime + 0.5);
-                }
-
-            
-            
-            function playDingChime() {
-                const context = audioContext;
-                const currentTime = context.currentTime;
-
-                function createTone(freq, detune, duration, startVol, context) {
-                    const oscillator = context.createOscillator();
-                    const gainNode = context.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(context.destination);
-
-                    // Ding Chime: Sine wave with long decay
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(freq, currentTime);
-                    oscillator.detune.setValueAtTime(detune, currentTime);
-
-                    gainNode.gain.setValueAtTime(0.01, currentTime);
-                    gainNode.gain.linearRampToValueAtTime(startVol, currentTime + 0.05);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
-
-                    oscillator.start(currentTime);
-                    oscillator.stop(currentTime + duration);
-                }
-                
-                const dingDuration = 1.5;
-                createTone(880, 0, dingDuration, 0.4, context); 
-                createTone(880, 10, dingDuration, 0.4, context);
+                const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_fail.mp3');
+                audio.volume = 0.5; // Adjust volume if too loud
+                audio.play().catch(err => console.log('Audio play failed:', err));
             }
+            
+            function playMediumAnswer() {
+                const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_medium.mp3');
+                audio.volume = 0.5; // Adjust volume if too loud
+                audio.play().catch(err => console.log('Audio play failed:', err));
+            }
+             
 
             function playMouseClick() {
                 const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/computer-mouse-click-02-383961.mp3');
@@ -517,50 +446,11 @@
                 audio.play().catch(err => console.log('Audio play failed:', err));
             }
 
-            function playSuccess() {
-                const context = audioContext;
-                const currentTime = context.currentTime;
-                const duration = 1.5; // snappy success sound
-
-                // Create a High-Pass Filter for a bright, metallic chime sound
-                const filter = context.createBiquadFilter();
-                filter.type = 'highpass';
-                filter.frequency.setValueAtTime(2000, currentTime); // Cut off frequencies below 2000Hz
-
-                // Function to create a single tone (now includes connecting to the filter)
-                function createTone(midiNote, duration, startVol) {
-                    const oscillator = context.createOscillator();
-                    const gainNode = context.createGain();
-                    
-                    // Convert MIDI note number to frequency (e.g., 60 is Middle C)
-                    const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
-
-                    // Connect nodes: Oscillator -> Gain -> Filter -> Destination
-                    oscillator.connect(gainNode);
-                    gainNode.connect(filter);
-                    filter.connect(context.destination);
-
-                    // Ding Chime: Sine wave for a clean bell tone
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(freq, currentTime);
-
-                    // Volume Envelope: Quick attack, immediate drop for crispness
-                    gainNode.gain.setValueAtTime(0.001, currentTime);
-                    gainNode.gain.linearRampToValueAtTime(startVol, currentTime + 0.01); // Instant peak
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration); // Fast, triumphant decay
-
-                    oscillator.start(currentTime);
-                    oscillator.stop(currentTime + duration);
-                }
-                
-                // Play a quick, festive major chord (C6 - E6 - G6)
-                // MIDI Notes: C6=84, E6=88, G6=91
-                createTone(84, duration, 0.4);
-                createTone(88, duration, 0.4);
-                createTone(91, duration, 0.4);
+            function playCorrectAnswer() {
+                const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_success.mp3');
+                audio.volume = 0.5; // Adjust volume if too loud
+                audio.play().catch(err => console.log('Audio play failed:', err));
             }
-
-            
 
             // =================================================================
             // 2. SCENARIO LOGIC (CALLING SOUNDS)
@@ -599,7 +489,7 @@
                     status = 'failure';
                 } else if (choice === 'verify') {
                     // Play Ding Chime sound for correct/success action
-                    playSuccess(); 
+                    playCorrectAnswer(); 
 
                     feedback = `
                         <strong style="font-size: 16px;">✓ Smart Move! (Best Practice)</strong>
@@ -607,7 +497,7 @@
                     `;
                     status = 'success';
                 } else if (choice === 'delete') {
-                    playDingChime(); 
+                    playMediumAnswer(); 
                     feedback = `
                         <strong style="font-size: 16px;">⚠️ Safe, but Not Best Practice</strong>
                         <p style="margin-top: 10px;">You deleted the suspicious email and moved on. You avoided clicking the link, which kept your credentials safe.</p>
