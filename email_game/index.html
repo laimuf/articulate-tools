@@ -446,12 +446,11 @@
                 audio.play().catch(err => console.log('Audio play failed:', err));
             }
 
-            function playSuccess() {
+            function playCorrectAnswer() {
                 const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_success.mp3');
                 audio.volume = 0.5; // Adjust volume if too loud
                 audio.play().catch(err => console.log('Audio play failed:', err));
             }
-
 
             // =================================================================
             // 2. SCENARIO LOGIC (CALLING SOUNDS)
@@ -490,7 +489,7 @@
                     status = 'failure';
                 } else if (choice === 'verify') {
                     // Play Ding Chime sound for correct/success action
-                    playSuccess(); 
+                    playCorrectAnswer(); 
 
                     feedback = `
                         <strong style="font-size: 16px;">✓ Smart Move! (Best Practice)</strong>
