@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Objectives</title>
+    <style>
+        :root {
+            --bg-color: #e9f5eb; /* Light mint background */
+            --text-color: #000000;
+            --icon-color: #128c2f; /* Dark green for icons */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 80px;
+            letter-spacing: 0.5px;
+        }
+
+        .objectives-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 40px;
+        }
+
+        .objective-item {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Icon Styling */
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--icon-color);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            h2 {
+                margin-bottom: 50px;
+                font-size: 1.3rem;
+            }
+            .objective-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>By the end of this course you'll be able to:</h2>
+
+        <div class="objectives-grid">
+            <div class="objective-item">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <p>Identify the indicators of Browser-in-the-Browser (BitB) attacks</p>
+            </div>
+
+            <div class="objective-item">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <line x1="8" y1="9" x2="16" y2="9"></line>
+                        <line x1="8" y1="13" x2="14" y2="13"></line>
+                    </svg>
+                </div>
+                <p>Explain how BitB attacks exploit SSO (Single Sign-On) workflows</p>
+            </div>
+
+            <div class="objective-item">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <p>Demonstrate correct response procedures to protect yourself and your organisation</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
