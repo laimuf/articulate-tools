@@ -63,6 +63,8 @@
             font-size: 1.05em;
             margin-top: 10px;
             margin-bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
         }
 
         .start-button {
@@ -70,8 +72,8 @@
             border: none;
             cursor: pointer;
             padding: 0;
-            width: 160px;
-            height: 160px;
+            width: 210px;
+            height: 210px;
             animation: float 4s ease-in-out infinite;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
             transition: filter 0.3s ease, transform 0.3s ease;
@@ -99,7 +101,7 @@
         /* Tablets */
         @media (max-width: 768px) {
             .brc-logo {
-                width: 140px;
+                width: 180px;
             }
 
             h1 {
@@ -108,8 +110,8 @@
             }
 
             .start-button {
-                width: 140px;
-                height: 140px;
+                width: 180px;
+                height: 180px;
             }
 
             .click-text {
@@ -124,7 +126,7 @@
             }
 
             .brc-logo {
-                width: 110px;
+                width: 150px;
                 margin-bottom: 15px;
             }
 
@@ -134,8 +136,8 @@
             }
 
             .start-button {
-                width: 120px;
-                height: 120px;
+                width: 160px;
+                height: 160px;
             }
 
             .click-text {
@@ -226,7 +228,7 @@
 
     <img class="bg-rectangle" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/Rectangle%20brc.svg" alt="">
     <div class="start-container">
-        <img class="brc-logo" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/BRC_20logo.svg" alt="BRC Logo">
+        <img class="brc-logo" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/BRC_logo.svg" alt="BRC Logo">
         <h1>Introduction to SafeMates</h1>
         <button class="start-button" id="startBtn" onclick="launchCourse()">
             <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/hub.svg" alt="Start Training">
@@ -284,7 +286,8 @@
             });
             setTimeout(function() {
                 cloudsContainer.classList.add('done');
-            }, 3200);
+                document.querySelector('.click-text').style.opacity = '1';
+            }, 1800);
         }, 1500);
 
         function launchCourse() {
