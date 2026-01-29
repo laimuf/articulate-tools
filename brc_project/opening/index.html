@@ -113,8 +113,8 @@
 
         /* Fly-away transition (applied via JS after freezing animation) */
         .cloud.flying {
-            transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 1.5s ease-in-out;
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 2.5s ease-in-out;
         }
 
         /* After animation remove from flow so tent is clickable */
@@ -220,7 +220,7 @@
             // After fly-away finishes, hide completely so tent is interactive
             setTimeout(function() {
                 cloudsContainer.classList.add('done');
-            }, 2000);
+            }, 3200);
         }, 1500);
 
         // Play blip.mp3 when clicking the Enter sign
