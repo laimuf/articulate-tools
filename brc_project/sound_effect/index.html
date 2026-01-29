@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Continue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .continue-btn {
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: #0057B8;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 87, 184, 0.3);
+        }
+
+        .continue-btn:hover {
+            background: #004494;
+            transform: scale(1.03);
+            box-shadow: 0 6px 18px rgba(0, 87, 184, 0.4);
+        }
+
+        .continue-btn:active {
+            transform: scale(0.97);
+        }
+
+        @media (max-width: 480px) {
+            .continue-btn {
+                padding: 12px 32px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="continue-btn" aria-label="Continue" onclick="handleContinue()">Continue</button>
+
+    <script>
+        var clickAudio = new Audio('../../assets/BRC/click.mp3');
+        clickAudio.volume = 0.5;
+
+        function handleContinue() {
+            clickAudio.currentTime = 0;
+            clickAudio.play().catch(function(err) {
+                console.log('Audio play failed:', err);
+            });
+
+            setTimeout(function() {
+                window.parent.postMessage('trigger-continue-button', '*');
+            }, 300);
+        }
+    </script>
+</body>
+</html>

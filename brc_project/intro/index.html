@@ -45,7 +45,7 @@
         }
 
         .brc-logo {
-            width: 180px;
+            width: 240px;
             height: auto;
             margin-bottom: 20px;
         }
@@ -143,13 +143,90 @@
                 margin-top: 8px;
             }
         }
-        
+
+
+        /* ---- Cloud overlay ---- */
+        .clouds-container {
+            position: fixed;
+            top: 15%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            z-index: 10;
+            overflow: visible;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 52%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity;
+        }
+
+        .cloud img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .cloud-1 { top: 2%;  left: 5%;  animation: cloudFloat1 3s ease-in-out infinite; }
+        .cloud-2 { top: 7%;  right: 3%; animation: cloudFloat2 3.5s ease-in-out infinite; }
+        .cloud-3 { top: 42%; left: 8%;  animation: cloudFloat3 4s ease-in-out infinite; }
+        .cloud-4 { top: 38%; right: 1%; animation: cloudFloat4 3.2s ease-in-out infinite; }
+
+        @keyframes cloudFloat1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5px, -8px); }
+        }
+        @keyframes cloudFloat2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-6px, -10px); }
+        }
+        @keyframes cloudFloat3 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(7px, -6px); }
+        }
+        @keyframes cloudFloat4 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-5px, -9px); }
+        }
+
+        .cloud.flying {
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 2.5s ease-in-out;
+        }
+
+        .clouds-container.done {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
     </style>
 </head>
 <body>
+    <!-- Cloud overlay -->
+    <div class="clouds-container" id="cloudsContainer">
+        <div class="cloud cloud-1">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%201.svg" alt="">
+        </div>
+        <div class="cloud cloud-2">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%202.svg" alt="">
+        </div>
+        <div class="cloud cloud-3">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%202.svg" alt="">
+        </div>
+        <div class="cloud cloud-4">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%201.svg" alt="">
+        </div>
+    </div>
+
     <img class="bg-rectangle" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/Rectangle%20brc.svg" alt="">
     <div class="start-container">
-        <img class="brc-logo" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/BRC%20logo.svg" alt="BRC Logo">
+        <img class="brc-logo" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/BRC_20logo.svg" alt="BRC Logo">
         <h1>Introduction to SafeMates</h1>
         <button class="start-button" id="startBtn" onclick="launchCourse()">
             <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/hub.svg" alt="Start Training">
@@ -179,6 +256,36 @@
         startBtn.addEventListener('click', function() {
             playDoorBell();
         });
+
+        // Cloud fly-away animation
+        var cloudsContainer = document.getElementById('cloudsContainer');
+        var flyTargets = {
+            'cloud-1': 'translate(-150%, -150%)',
+            'cloud-2': 'translate(150%, -150%)',
+            'cloud-3': 'translate(-150%, 150%)',
+            'cloud-4': 'translate(150%, 150%)'
+        };
+
+        setTimeout(function() {
+            var clouds = document.querySelectorAll('.cloud');
+            clouds.forEach(function(cloud) {
+                var current = getComputedStyle(cloud).transform;
+                cloud.style.animation = 'none';
+                cloud.style.transform = current;
+                cloud.offsetHeight;
+                cloud.classList.add('flying');
+                cloud.style.opacity = '0';
+                for (var key in flyTargets) {
+                    if (cloud.classList.contains(key)) {
+                        cloud.style.transform = flyTargets[key];
+                        break;
+                    }
+                }
+            });
+            setTimeout(function() {
+                cloudsContainer.classList.add('done');
+            }, 3200);
+        }, 1500);
 
         function launchCourse() {
             // This is the message Rise 360's internal script is listening for (as seen in your image snippet).
