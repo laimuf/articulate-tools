@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Opening</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        /* Background tent - centered and scaled to fit viewport */
+        .tent-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 1200px;
+            max-height: 90vh;
+        }
+
+        .tent-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Clickable enter button overlay on the "Enter" sign in tent.svg */
+        .enter-btn {
+            position: absolute;
+            left: 31%;
+            top: 39.3%;
+            width: 37.7%;
+            height: 23.3%;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            outline: none;
+            border-radius: 60px;
+            z-index: 5;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .enter-btn:hover {
+            filter: drop-shadow(0 4px 16px rgba(238, 42, 36, 0.5));
+            transform: scale(1.03);
+        }
+
+        .enter-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ---- Cloud overlay ---- */
+        .clouds-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 55%;
+            height: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity;
+            transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 1.5s ease-in-out;
+        }
+
+        .cloud img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* 2x2 grid positions — overlap at center to fully cover tent */
+        .cloud-tl { top: -5%;  left: -5%;  }
+        .cloud-tr { top: -5%;  right: -5%; }
+        .cloud-bl { bottom: -5%; left: -5%;  }
+        .cloud-br { bottom: -5%; right: -5%; }
+
+        /* Clouds move away */
+        .clouds-container.open .cloud-tl {
+            transform: translate(-120%, -120%);
+            opacity: 0;
+        }
+        .clouds-container.open .cloud-tr {
+            transform: translate(120%, -120%);
+            opacity: 0;
+        }
+        .clouds-container.open .cloud-bl {
+            transform: translate(-120%, 120%);
+            opacity: 0;
+        }
+        .clouds-container.open .cloud-br {
+            transform: translate(120%, 120%);
+            opacity: 0;
+        }
+
+        /* After animation remove from flow so tent is clickable */
+        .clouds-container.done {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .tent-wrapper {
+                width: 95vw;
+            }
+            .cloud {
+                width: 60%;
+                height: 60%;
+            }
+            .enter-btn {
+                border-radius: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tent-wrapper {
+                width: 100vw;
+            }
+            .cloud {
+                width: 65%;
+                height: 65%;
+            }
+            .enter-btn {
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background: tent.svg with clickable Enter sign -->
+    <div class="tent-wrapper">
+        <img class="tent-img" src="../../assets/BRC/tent.svg" alt="Tent Background">
+        <button class="enter-btn" id="enterBtn" aria-label="Enter"></button>
+    </div>
+
+    <!-- Cloud overlay: 2x2 grid -->
+    <div class="clouds-container" id="cloudsContainer">
+        <div class="cloud cloud-tl">
+            <img src="../../assets/BRC/cloud 1.svg" alt="">
+        </div>
+        <div class="cloud cloud-tr">
+            <img src="../../assets/BRC/cloud 2.svg" alt="">
+        </div>
+        <div class="cloud cloud-bl">
+            <img src="../../assets/BRC/cloud 1.svg" alt="">
+        </div>
+        <div class="cloud cloud-br">
+            <img src="../../assets/BRC/cloud 2.svg" alt="">
+        </div>
+    </div>
+
+    <script>
+        var cloudsContainer = document.getElementById('cloudsContainer');
+        var enterBtn = document.getElementById('enterBtn');
+
+        // Preload audio so it's ready on click
+        var blipAudio = new Audio('../../assets/BRC/blip.mp3');
+        blipAudio.volume = 0.5;
+
+        // Clouds automatically part away after a short delay
+        setTimeout(function() {
+            cloudsContainer.classList.add('open');
+
+            // After animation finishes, hide completely so tent is interactive
+            setTimeout(function() {
+                cloudsContainer.classList.add('done');
+            }, 2000);
+        }, 1500);
+
+        // Play blip.mp3 when clicking the Enter sign
+        enterBtn.addEventListener('click', function() {
+            blipAudio.currentTime = 0;
+            blipAudio.play().catch(function(err) {
+                console.log('Audio play failed:', err);
+            });
+        });
+
+        // Also support touch
+        enterBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            blipAudio.currentTime = 0;
+            blipAudio.play().catch(function(err) {
+                console.log('Audio play failed:', err);
+            });
+        });
+    </script>
+
+</body>
+</html>
