@@ -83,6 +83,8 @@
     document.body.prepend(hud);
 
     // HUD API
+    const pointSound = new Audio("https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_success.mp3");
+
     window.incrementPoints = (() => {
       let points = 0;
       return (val = 1) => {
@@ -93,6 +95,8 @@
         el.style.transition = "transform 0.3s ease";
         el.style.transform = "scale(1.4)";
         requestAnimationFrame(() => requestAnimationFrame(() => { el.style.transform = "scale(1)"; }));
+        pointSound.currentTime = 0;
+        pointSound.play().catch(() => {});
       };
     })();
 
