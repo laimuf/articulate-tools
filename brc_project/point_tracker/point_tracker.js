@@ -57,7 +57,7 @@
         .name-text { font-size: 21px !important; font-weight: 600 !important; color: #ee2a25 !important; }
         .floating-point {
           position: fixed !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important;
-          z-index: 100000 !important; font-size: 20px !important; font-weight: 700 !important; color: #ee2a24 !important;
+          z-index: 100000 !important; font-size: 36px !important; font-weight: 700 !important; color: #ee2a24 !important;
           background: none !important; pointer-events: none !important; animation: riseFade 1.2s ease-out forwards !important; white-space: nowrap !important;
         }
         @media (max-width: 600px) { #${HUD_ID} { left: 50% !important; transform: translateX(-50%) !important; right: auto !important; padding: 12px 24px !important; } }
@@ -114,7 +114,7 @@
       };
     })();
 
-    window.showFloatingPoint = (text = "+1 point") => {
+    window.showFloatingPoint = (text = "+1 point 😊") => {
       const float = document.createElement("div");
       float.className = "floating-point";
       float.textContent = text;
