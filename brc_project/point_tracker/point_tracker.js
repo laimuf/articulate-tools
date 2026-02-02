@@ -43,16 +43,17 @@
         }
         #${HUD_ID} {
           position: fixed !important; top: 20px !important; right: 20px !important; z-index: 99999 !important;
-          width: 95% !important; max-width: 480px !important; border-radius: 9999px !important;
+          width: 95% !important; max-width: 480px !important; border-radius: 50px !important;
           padding: 16px 36px !important; display: flex !important; align-items: center !important; justify-content: space-between !important;
           background-color: #ffffff !important; font-family: Inter, sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
           border: 2px solid #36533B !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
         }
         #${HUD_ID} .stats { display: flex !important; flex-direction: column !important; gap: 6px !important; }
         .points-text { font-size: 20px !important; font-weight: 700 !important; color: #ee2a25 !important; line-height: 1.3 !important; }
         .progress-text { font-size: 16px !important; font-weight: 600 !important; color: #000000 !important; }
         .avatar-container { display: flex !important; flex-direction: column !important; align-items: center !important; margin-right: 12px !important; }
-        .avatar { width: 60px !important; height: 60px !important; border-radius: 50% !important; margin-bottom: 4px !important; object-fit: cover !important; }
+        .avatar { width: 60px !important; height: 60px !important; border-radius: 50% !important; margin-bottom: 4px !important; object-fit: cover !important;  }
         .name-text { font-size: 21px !important; font-weight: 600 !important; color: #ee2a25 !important; }
         .floating-point {
           position: fixed !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important;
