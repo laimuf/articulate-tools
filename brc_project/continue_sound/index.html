@@ -1,128 +1,66 @@
 (function () {
-    let confettiLoaded = false;
-    let applauseAudio = null;
+    let clickAudio = null;
 
-    function loadConfetti(callback) {
-        if (confettiLoaded && window.confetti) {
-            callback();
-            return;
+    function playClickSound() {
+        if (!clickAudio) {
+            clickAudio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/click.mp3');
+            clickAudio.volume = 0.5;
         }
 
-        if (window.confetti) {
-            confettiLoaded = true;
-            callback();
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js';
-
-        script.onload = function () {
-            confettiLoaded = true;
-            callback();
-        };
-
-        script.onerror = function () {
-            console.error('Failed to load canvas-confetti library');
-        };
-        
-        document.head.appendChild(script);
-    }
-
-    function playApplauseSound() {
-        // Create audio element if it doesn't exist
-        if (!applauseAudio) {
-            applauseAudio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/crowd-applause-113728.mp3');
-            applauseAudio.volume = 0.5; // Set volume to 50%
-        }
-
-        // Reset and play the sound
-        applauseAudio.currentTime = 0;
-        applauseAudio.play().catch(error => {
-            console.warn('Failed to play applause sound:', error);
+        clickAudio.currentTime = 0;
+        clickAudio.play().catch(error => {
+            console.warn('Failed to play click sound:', error);
         });
     }
 
-    function fireConfetti() {
-        const triggerConfetti = () => {
-            // Check for reduced motion preference
-            const prefersReducedMotion = window.matchMedia('(prefers-reduce-motion: reduce)').matches;
+    function attachClickSoundEvents() {
+        const blockIds = [
+            'cmkzkl0wp00fl3b7m57cjpe6i',
+            'cmkxxjuf900lg3b7mjc6la9nk'
+        ];
 
-            if (prefersReducedMotion) {
-                console.log('Confetti disabled due to user motion preferences');
+        let allAttached = true;
+
+        blockIds.forEach(blockId => {
+            const targetBlock = document.querySelector('[data-block-id="' + blockId + '"]');
+
+            if (!targetBlock) {
+                allAttached = false;
                 return;
             }
 
-            if (typeof confetti === 'function') {
-                window.confetti({
-                    "particleCount": 100,
-                    "spread": 70,
-                    "startVelocity": 45,
-                    "gravity": 0.8,
-                    "scalar": 1,
-                    "colors": ["#EE2A24"],
-                    "shapes": ["square", "circle"],
-                    "origin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    }
+            const buttons = targetBlock.querySelectorAll('button');
+
+            if (buttons.length === 0) {
+                console.warn('No buttons found in Rise block:', blockId);
+                return;
+            }
+
+            buttons.forEach(button => {
+                if (button.hasAttribute('data-click-sound-attached')) {
+                    return;
+                }
+
+                button.setAttribute('data-click-sound-attached', 'true');
+
+                button.addEventListener('click', function () {
+                    playClickSound();
                 });
-
-                // Play applause sound
-                playApplauseSound();
-            }
-        };
-
-        loadConfetti(triggerConfetti);
-    }
-
-    function attachConfettiEvents() {
-        const blockId = 'cml6sdq400e8f3b7k57vlj3ej'.trim();
-
-        if (!blockId) {
-            console.error('Block ID cannot be empty');
-            return false;
-        }
-
-        const targetBlock = document.querySelector('[data-block-id="' + blockId + '"]');
-
-        if (!targetBlock) {
-            return false;
-        }
-
-        const buttons = targetBlock.querySelectorAll('button');
-
-        if (buttons.length === 0) {
-            console.warn('No buttons found in Rise block:', blockId);
-            return false;
-        }
-
-        buttons.forEach(button => {
-            if (button.hasAttribute('data-confetti-attached')) {
-                return;
-            }
-
-            button.setAttribute('data-confetti-attached', 'true');
-
-            button.addEventListener('click', function () {
-                fireConfetti();
             });
+
+            console.log('Click sound attached to', buttons.length, 'button(s) in Rise block:', blockId);
         });
 
-        console.log('Confetti attached to', buttons.length, 'button(s) in Rise block:', blockId);
-        return true;
+        return allAttached;
     }
 
-    // Wait for the target block to appear using MutationObserver
     const observer = new MutationObserver(() => {
-        if (attachConfettiEvents()) {
+        if (attachClickSoundEvents()) {
             observer.disconnect();
         }
     });
 
-    // Try to attach immediately in case the block is already loaded
-    if (!attachConfettiEvents()) {
-        // If immediate attachment failed, start observing
+    if (!attachClickSoundEvents()) {
         observer.observe(document.body, {
             childList: true,
             subtree: true
