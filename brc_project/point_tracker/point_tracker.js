@@ -67,7 +67,9 @@
           z-index: 100000 !important; font-size: 36px !important; font-weight: 700 !important; color: #ee2a24 !important;
           background: none !important; pointer-events: none !important; animation: riseFade 1.2s ease-out forwards !important; white-space: nowrap !important;
         }
-        @media (max-width: 600px) { #${HUD_ID} { left: 50% !important; transform: translateX(-50%) !important; right: auto !important; padding: 12px 24px !important; } }
+        #${HUD_ID}.hud-hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(-20px) !important; }
+        #${HUD_ID} { transition: opacity 0.3s ease, transform 0.3s ease !important; }
+        @media (max-width: 600px) { #${HUD_ID} { left: 50% !important; transform: translateX(-50%) !important; right: auto !important; padding: 12px 24px !important; } #${HUD_ID}.hud-hidden { transform: translateX(-50%) translateY(-20px) !important; } }
       `;
       document.head.appendChild(style);
     }
@@ -87,7 +89,25 @@
         <div class="progress-text">Progress: <span id="progress-count" aria-live="polite">0</span> of ${totalQuestions}</div>
         <div class="points-text">Points: <span id="points-count" aria-live="polite">0</span> / ${totalPossiblePoints}</div>
       </div>`;
+    hud.classList.add("hud-hidden");
     document.body.prepend(hud);
+
+    // Visibility: show HUD only when a KC block is in the viewport
+    const visibleBlocks = new Set();
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute("data-block-id");
+        if (entry.isIntersecting) visibleBlocks.add(id);
+        else visibleBlocks.delete(id);
+      });
+      if (visibleBlocks.size > 0) hud.classList.remove("hud-hidden");
+      else hud.classList.add("hud-hidden");
+    }, { threshold: 0.1 });
+
+    knowledgeCheckBlockIds.forEach(async (blockId) => {
+      const block = await waitFor(`[data-block-id="${blockId}"]`).catch(() => null);
+      if (block) visibilityObserver.observe(block);
+    });
 
     // HUD API
     const pointSound = new Audio("https://raw.githubusercontent.com/laimuf/articulate-tools/main/assets/sounds/email_success.mp3");
