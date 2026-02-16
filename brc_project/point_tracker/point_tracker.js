@@ -1,11 +1,18 @@
 (function () {
   const HUD_ID = "rise-custom-hud";
   const lessonStartBlockId = "cmkzi45wn02rr3b7koi13gri5";
-  const knowledgeCheckBlockIds = "cmkzi45wn02rr3b7koi13gri5, cml5j6ba000x13b7kz9rhbf1f".split(",").map(s => s.trim()).filter(Boolean);
+  const knowledgeCheckBlockIds = "cmkzi45wn02rr3b7koi13gri5, cml5j6ba000x13b7kz9rhbf1f, cml6n68xd08hc3b7kb6ccbz5c, cml6nu0zt0auy3b7k6f00ywc7, cml6p0gu70c8x3b7ku15s5vnb, cml6qq6of0dvr3b7k6x1domib, cml6pffkc0d2p3b7koohrr909, cml6rp6p20e3i3b7kenwbgsag, cml6s2m070e6y3b7ko6sf8ahb".split(",").map(s => s.trim()).filter(Boolean);
 
   const pointValues = {
     "cmkzi45wn02rr3b7koi13gri5": 1,
     "cml5j6ba000x13b7kz9rhbf1f": 1,
+    "cml6n68xd08hc3b7kb6ccbz5c": 1,
+    "cml6nu0zt0auy3b7k6f00ywc7": 1,
+    "cml6p0gu70c8x3b7ku15s5vnb": 1,
+    "cml6qq6of0dvr3b7k6x1domib": 1,
+    "cml6pffkc0d2p3b7koohrr909": 1,
+    "cml6rp6p20e3i3b7kenwbgsag": 1,
+    "cml6s2m070e6y3b7ko6sf8ahb": 1,
   };
 
   const totalPossiblePoints = Object.values(pointValues).reduce((a, b) => a + b, 0);
