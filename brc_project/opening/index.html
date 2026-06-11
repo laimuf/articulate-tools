@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Opening</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        /* Background tent - centered and scaled to fit viewport */
+        .tent-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 1200px;
+            max-height: 90vh;
+        }
+
+        .tent-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Clickable enter button overlay on the "Enter" sign in tent.svg */
+        .enter-btn {
+            position: absolute;
+            left: 31%;
+            top: 39.3%;
+            width: 37.7%;
+            height: 23.3%;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            outline: none;
+            border-radius: 60px;
+            z-index: 5;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .enter-btn:hover {
+            filter: drop-shadow(0 4px 16px rgba(238, 42, 36, 0.5));
+            transform: scale(1.03);
+        }
+
+        .enter-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ---- Cloud overlay ---- */
+        .clouds-container {
+            position: fixed;
+            top: 15%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            z-index: 10;
+            overflow: visible;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 52%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity;
+        }
+
+        .cloud img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Position + float animation combined per cloud */
+        .cloud-1 { top: 2%;  left: 5%;  animation: float1 3s ease-in-out infinite; }
+        .cloud-2 { top: 7%;  right: 3%; animation: float2 3.5s ease-in-out infinite; }
+        .cloud-3 { top: 42%; left: 8%;  animation: float3 4s ease-in-out infinite; }
+        .cloud-4 { top: 38%; right: 1%; animation: float4 3.2s ease-in-out infinite; }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5px, -8px); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-6px, -10px); }
+        }
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(7px, -6px); }
+        }
+        @keyframes float4 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-5px, -9px); }
+        }
+
+        /* Fly-away transition (applied via JS after freezing animation) */
+        .cloud.flying {
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 2.5s ease-in-out;
+        }
+
+        /* After animation remove from flow so tent is clickable */
+        .clouds-container.done {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .tent-wrapper {
+                width: 95vw;
+            }
+            .clouds-container {
+                top: 18%;
+                height: 55%;
+            }
+            .enter-btn {
+                border-radius: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tent-wrapper {
+                width: 100vw;
+            }
+            .clouds-container {
+                top: 20%;
+                height: 50%;
+            }
+            .enter-btn {
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background: tent.svg with clickable Enter sign -->
+    <div class="tent-wrapper">
+        <img class="tent-img" src="../../assets/BRC/tent3.svg" alt="Tent Background">
+        <button class="enter-btn" id="enterBtn" aria-label="Enter"></button>
+    </div>
+
+    <!-- Cloud overlay: 2x2 grid -->
+    <div class="clouds-container" id="cloudsContainer">
+        <div class="cloud cloud-1">
+            <img src="../../assets/BRC/cloud 1.svg" alt="">
+        </div>
+        <div class="cloud cloud-2">
+            <img src="../../assets/BRC/cloud 2.svg" alt="">
+        </div>
+        <div class="cloud cloud-3">
+            <img src="../../assets/BRC/cloud 2.svg" alt="">
+        </div>
+        <div class="cloud cloud-4">
+            <img src="../../assets/BRC/cloud 1.svg" alt="">
+        </div>
+    </div>
+
+    <script>
+        var cloudsContainer = document.getElementById('cloudsContainer');
+        var enterBtn = document.getElementById('enterBtn');
+
+        // Preload audio so it's ready on click
+        var blipAudio = new Audio('../../assets/BRC/blip.mp3');
+        blipAudio.volume = 0.5;
+
+        // Diagonal fly-away targets per cloud
+        var flyTargets = {
+            'cloud-1': 'translate(-150%, -150%)',
+            'cloud-2': 'translate(150%, -150%)',
+            'cloud-3': 'translate(-150%, 150%)',
+            'cloud-4': 'translate(150%, 150%)'
+        };
+
+        // After 1.5s: freeze float, then fly away diagonally
+        setTimeout(function() {
+            var clouds = document.querySelectorAll('.cloud');
+
+            clouds.forEach(function(cloud) {
+                // 1. Freeze current position by reading computed transform
+                var current = getComputedStyle(cloud).transform;
+                cloud.style.animation = 'none';
+                cloud.style.transform = current;
+
+                // 2. Force browser to register the frozen state
+                cloud.offsetHeight;
+
+                // 3. Add transition class and set diagonal fly-away
+                cloud.classList.add('flying');
+                cloud.style.opacity = '0';
+
+                // Find which cloud-N class this element has
+                for (var key in flyTargets) {
+                    if (cloud.classList.contains(key)) {
+                        cloud.style.transform = flyTargets[key];
+                        break;
+                    }
+                }
+            });
+
+            // After fly-away finishes, hide completely so tent is interactive
+            setTimeout(function() {
+                cloudsContainer.classList.add('done');
+            }, 3200);
+        }, 1500);
+
+        // Play blip.mp3 when clicking the Enter sign
+        enterBtn.addEventListener('click', function() {
+            blipAudio.currentTime = 0;
+            blipAudio.play().catch(function(err) {
+                console.log('Audio play failed:', err);
+            });
+        });
+
+        // Also support touch
+        enterBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            blipAudio.currentTime = 0;
+            blipAudio.play().catch(function(err) {
+                console.log('Audio play failed:', err);
+            });
+        });
+    </script>
+
+</body>
+</html>

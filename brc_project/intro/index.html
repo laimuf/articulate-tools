@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotting and Handling BitB Attacks</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+
+            background-color: white;
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: black;
+            text-align: center;
+        }
+  
+
+        .bg-rectangle {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .start-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .brc-logo {
+            width: 240px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0 0 30px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            line-height: 1.2;
+        }
+
+        .click-text {
+            font-size: 1.05em;
+            margin-top: 10px;
+            margin-bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        .start-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 210px;
+            height: 210px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        .start-button:hover {
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)) brightness(1.1);
+            animation-play-state: paused;
+        }
+
+        .start-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Tablets */
+        @media (max-width: 768px) {
+            .brc-logo {
+                width: 180px;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin-bottom: 25px;
+            }
+
+            .start-button {
+                width: 180px;
+                height: 180px;
+            }
+
+            .click-text {
+                font-size: 0.95em;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .start-container {
+                padding: 20px;
+            }
+
+            .brc-logo {
+                width: 150px;
+                margin-bottom: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .start-button {
+                width: 160px;
+                height: 160px;
+            }
+
+            .click-text {
+                font-size: 0.9em;
+                margin-top: 8px;
+            }
+        }
+
+
+        /* ---- Cloud overlay ---- */
+        .clouds-container {
+            position: fixed;
+            top: 15%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            z-index: 10;
+            overflow: visible;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 52%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity;
+        }
+
+        .cloud img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .cloud-1 { top: 2%;  left: 5%;  animation: cloudFloat1 3s ease-in-out infinite; }
+        .cloud-2 { top: 7%;  right: 3%; animation: cloudFloat2 3.5s ease-in-out infinite; }
+        .cloud-3 { top: 42%; left: 8%;  animation: cloudFloat3 4s ease-in-out infinite; }
+        .cloud-4 { top: 38%; right: 1%; animation: cloudFloat4 3.2s ease-in-out infinite; }
+
+        @keyframes cloudFloat1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5px, -8px); }
+        }
+        @keyframes cloudFloat2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-6px, -10px); }
+        }
+        @keyframes cloudFloat3 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(7px, -6px); }
+        }
+        @keyframes cloudFloat4 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-5px, -9px); }
+        }
+
+        .cloud.flying {
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 2.5s ease-in-out;
+        }
+
+        .clouds-container.done {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Cloud overlay -->
+    <div class="clouds-container" id="cloudsContainer">
+        <div class="cloud cloud-1">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%201.svg" alt="">
+        </div>
+        <div class="cloud cloud-2">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%202.svg" alt="">
+        </div>
+        <div class="cloud cloud-3">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%202.svg" alt="">
+        </div>
+        <div class="cloud cloud-4">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/cloud%201.svg" alt="">
+        </div>
+    </div>
+
+    <img class="bg-rectangle" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/Rectangle%20brc.svg" alt="">
+    <div class="start-container">
+        <img class="brc-logo" src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/BRC_logo.svg" alt="BRC Logo">
+        <h1>Introduction to SafeMates</h1>
+        <button class="start-button" id="startBtn" onclick="launchCourse()">
+            <img src="https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/hub.svg" alt="Start Training">
+        </button>
+        <p class="click-text"><em>Click the hub to begin the course.</em></p>
+    </div>
+
+    <script>
+        function playBlip() {
+            const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/blip.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(err => console.log('Audio play failed:', err));
+        }
+
+        function playDoorBell() {
+            const audio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/door%20bell.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(err => console.log('Audio play failed:', err));
+        }
+
+        const startBtn = document.getElementById('startBtn');
+
+        startBtn.addEventListener('mouseenter', function() {
+            playBlip();
+        });
+
+        startBtn.addEventListener('click', function() {
+            playDoorBell();
+        });
+
+        // Cloud fly-away animation
+        var cloudsContainer = document.getElementById('cloudsContainer');
+        var flyTargets = {
+            'cloud-1': 'translate(-150%, -150%)',
+            'cloud-2': 'translate(150%, -150%)',
+            'cloud-3': 'translate(-150%, 150%)',
+            'cloud-4': 'translate(150%, 150%)'
+        };
+
+        setTimeout(function() {
+            var clouds = document.querySelectorAll('.cloud');
+            clouds.forEach(function(cloud) {
+                var current = getComputedStyle(cloud).transform;
+                cloud.style.animation = 'none';
+                cloud.style.transform = current;
+                cloud.offsetHeight;
+                cloud.classList.add('flying');
+                cloud.style.opacity = '0';
+                for (var key in flyTargets) {
+                    if (cloud.classList.contains(key)) {
+                        cloud.style.transform = flyTargets[key];
+                        break;
+                    }
+                }
+            });
+            setTimeout(function() {
+                cloudsContainer.classList.add('done');
+                document.querySelector('.click-text').style.opacity = '1';
+            }, 1800);
+        }, 1500);
+
+        function launchCourse() {
+            // This is the message Rise 360's internal script is listening for (as seen in your image snippet).
+            const messageToRise = 'trigger-continue-button';
+            
+            // postMessage is used to communicate from an iframe (your embedded content)
+            // to its parent frame (the Rise 360 lesson page).
+            // '*' is used as the target origin for compatibility, as Rise 360's origin is known.
+            window.parent.postMessage(messageToRise, '*');
+        }
+    </script>
+</body>
+</html>

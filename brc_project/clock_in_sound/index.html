@@ -1,0 +1,68 @@
+(function () {
+    let clickAudio = null;
+
+    function playClickSound() {
+        if (!clickAudio) {
+            clickAudio = new Audio('https://raw.githubusercontent.com/laimuf/articulate-tools/frontpage_BRC/assets/BRC/clock%20_in.mp3');
+            clickAudio.volume = 0.5;
+        }
+
+        clickAudio.currentTime = 0;
+        clickAudio.play().catch(error => {
+            console.warn('Failed to play click sound:', error);
+        });
+    }
+
+    function attachClickSoundEvents() {
+        const blockIds = [
+            'cmky4z3eu02tf3b7m823r1bnq'
+        ];
+
+        let allAttached = true;
+
+        blockIds.forEach(blockId => {
+            const targetBlock = document.querySelector('[data-block-id="' + blockId + '"]');
+
+            if (!targetBlock) {
+                allAttached = false;
+                return;
+            }
+
+            const buttons = targetBlock.querySelectorAll('button');
+
+            if (buttons.length === 0) {
+                console.warn('No buttons found in Rise block:', blockId);
+                return;
+            }
+
+            buttons.forEach(button => {
+                if (button.hasAttribute('data-click-sound-attached')) {
+                    return;
+                }
+
+                button.setAttribute('data-click-sound-attached', 'true');
+
+                button.addEventListener('click', function () {
+                    playClickSound();
+                });
+            });
+
+            console.log('Click sound attached to', buttons.length, 'button(s) in Rise block:', blockId);
+        });
+
+        return allAttached;
+    }
+
+    const observer = new MutationObserver(() => {
+        if (attachClickSoundEvents()) {
+            observer.disconnect();
+        }
+    });
+
+    if (!attachClickSoundEvents()) {
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+})();

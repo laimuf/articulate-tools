@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Point Tracker Preview</title>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      background: #f0f0f0;
+      padding: 120px 40px 40px;
+    }
+    .mock-content {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .mock-content h2 { margin-top: 0; }
+    button.mock-btn {
+      margin: 8px 4px;
+      padding: 10px 20px;
+      font-size: 15px;
+      border: 2px solid #36533B;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+    }
+    button.mock-btn:hover { background: #e8f5e9; }
+  </style>
+</head>
+<body>
+
+  <!-- Mock block elements that the script looks for -->
+  <div data-block-id="cmkzi45wn02rr3b7koi13gri5"></div>
+  <div data-block-id="cml5j6ba000x13b7kz9rhbf1f"></div>
+
+  <div class="mock-content">
+    <h2>Point Tracker Preview</h2>
+    <p>The HUD should appear in the top-right corner above.</p>
+    <p>Use the buttons below to simulate quiz interactions:</p>
+    <div>
+      <button class="mock-btn" onclick="window.incrementProgress?.(); window.incrementPoints?.(1); window.showFloatingPoint?.();">
+        Simulate Correct Answer
+      </button>
+      <button class="mock-btn" onclick="window.incrementProgress?.();">
+        Simulate Wrong Answer (progress only)
+      </button>
+    </div>
+  </div>
+
+  <script src="point_tracker.js"></script>
+</body>
+</html>
