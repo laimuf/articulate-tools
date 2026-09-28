@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: white;
+            padding: 180px 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .card {
+            background: white;
+            border: 2px solid #000;
+            border-radius: 8px;
+            padding: 40px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: none;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 120px;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card h3 {
+            color: #000;
+            font-size: 20px;
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .card:hover h3 {
+            color: #333;
+        }
+        
+        .card-icon {
+            font-size: 28px;
+            color: #666;
+            margin-left: 20px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .card:hover .card-icon {
+            color: #000;
+            transform: scale(1.2);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+            padding: 40px 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 40px auto;
+            padding: 50px;
+            border-radius: 8px;
+            border: 2px solid #000;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: none;
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .close-btn {
+            color: #666;
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .close-btn:hover {
+            color: #000;
+        }
+        
+        .modal h2 {
+            color: #000;
+            margin-bottom: 30px;
+            font-size: 28px;
+            margin-top: 0;
+        }
+        
+        .modal h3 {
+            color: #000;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .modal p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+        
+        .modal ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .modal ul li {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .modal-goal {
+            background: #f5f5f5;
+            padding: 20px;
+            border-left: 4px solid #000;
+            margin: 25px 0;
+            border-radius: 4px;
+            color: #333;
+            font-size: 15px;
+        }
+        
+        .modal-goal strong {
+            color: #000;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 120px 15px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 30px 20px;
+                min-height: 100px;
+            }
+
+            .card h3 {
+                font-size: 18px;
+            }
+
+            .card-icon {
+                font-size: 24px;
+                margin-left: 15px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 100%;
+                margin: auto;
+                padding: 35px 25px;
+            }
+
+            .modal h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .modal h3 {
+                font-size: 16px;
+            }
+
+            .modal p, .modal ul li, .modal-goal {
+                font-size: 14px;
+            }
+
+            .close-btn {
+                top: 15px;
+                right: 15px;
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 100px 10px;
+            }
+
+            .cards-grid {
+                gap: 15px;
+            }
+
+            .card {
+                padding: 25px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+                min-height: auto;
+            }
+
+            .card h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .card-icon {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                margin-left: 0;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+
+            .modal h2 {
+                font-size: 20px;
+                padding-right: 30px;
+            }
+
+            .close-btn {
+                top: 10px;
+                right: 10px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cards-grid">
+            <div class="card" onclick="openModal('problem')">
+                <h3>The Brief</h3>
+                <span class="card-icon">→</span>
+            </div>
+            
+            <div class="card" onclick="openModal('approach')">
+                <h3>The Design Approach</h3>
+                <span class="card-icon">→</span>
+            </div>
+            
+            <div class="card" onclick="openModal('solution')">
+                <h3>The Solution</h3>
+                <span class="card-icon">→</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem Modal -->
+    <div id="problemModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('problem')">&times;</button>
+            <h2>The Problem</h2>
+            <p>Browser-in-the-Browser (BITB) phishing attacks exploit familiar single sign-on workflows. Staff were entering credentials out of habit, trusting pop-ups that looked like systems they recognised, especially when messages felt urgent. The issue wasn’t lack of awareness. Staff knew phishing existed. The real problem was that they didn’t pause to check whether a login request was genuine before entering their credentials.</p>
+            <div class="modal-goal">
+                <strong>Goal:</strong> Enable employees (especially non-technical staff) to recognise and respond to BITB attacks with confidence.
+            </div>
+        </div>
+    </div>
+
+    <!-- Approach Modal -->
+    <div id="approachModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('approach')">&times;</button>
+            <h2>The Design Approach</h2>
+            <p>The aim wasn’t to explain BITB attacks in detail, but to change behaviour when faced with an urgent email or login window, pause, check, and report. </p>
+            
+            <p>I focused on realistic practice and made the hidden parts of the attack visible. Explanations were kept short and visual to reduce cognitive load and support quick decisions. Each activity showed clear cause and effect:</p>
+            <ul>
+                <li>A phishing email simulation reflected real inbox conditions and time pressure</li>
+                <li>A “BITB monster” visualised the attacker behind a familiar login window, prompting staff to stop and check</li>
+                <li>Short videos explained only what was needed to support action, using simple visuals rather than technical language</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Solution Modal -->
+    <div id="solutionModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('solution')">&times;</button>
+            <h2>The Solution</h2>
+            <p>Short targeted visual and practical learning experience focused on three key areas:</p>
+            
+            <ul>
+                <li><h3>Recognising BITB warning signs</h3> An HTML-based inbox simulation and short animated story built relevance and prompted reflection on warning signs.</li>
+                <li><h3>Understanding how BITB attacks work</h3> A short video showed how BITB exploits SSO workflows and introduced the three key steps of the attack.</li>
+                <li><h3>Applying the correct response</h3> A video modelled the correct behaviour (spot–stop–report), followed by a sorting exercise to practise in context.</li>
+            </ul>
+            
+            <p>The course was built in Articulate Rise, with Vyond animations and light HTML customisation. Staff can safely observe mistakes, see realistic consequences, and practise the correct response before facing real attacks.</p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(section) {
+            const modalId = section + 'Modal';
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(section) {
+            const modalId = section + 'Modal';
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
