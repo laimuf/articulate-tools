@@ -1,0 +1,715 @@
+/* FAB BUTTON */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700;900&family=Public+Sans:wght@400;500;700;900&display=swap');
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Public Sans', sans-serif;
+    background-color: #f3f4f6;
+    font-weight: 500;
+    color: #4D4318;
+    /* Default body text color, consistent with weather widget */
+}
+
+.fab-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.fab-main-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    background-color: #F3EECE;
+    color: #D65F02;
+    font-size: 1.6em;
+}
+
+.fab-main-button:hover {
+    background-color: #E0DBC7;
+}
+
+.fab-main-button.active {
+    transform: rotate(45deg);
+}
+
+.fab-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+.fab-options.active {
+    max-height: 250px;
+    opacity: 1;
+}
+
+.fab-option-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #F3EECE;
+    font-size: 1.6em;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.2s ease-in-out;
+}
+
+.fab-option-button:hover {
+    transform: scale(1.05) translateY(0);
+}
+
+.fab-option-button:nth-of-type(1) {
+    background-color: #D65F02;
+}
+
+.fab-option-button:nth-of-type(2) {
+    background-color: #4D4318;
+}
+
+.fab-option-button:nth-of-type(3) {
+    background-color: #9CBBCE;
+}
+
+.fab-options.active .fab-option-button {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.fab-options.active #weatherOption {
+    transition-delay: 0.05s;
+}
+
+.fab-options.active #locationOption {
+    transition-delay: 0.1s;
+}
+
+.fab-options.active #waterOption {
+    transition-delay: 0.15s;
+}
+
+@media (max-width: 768px) {
+    .fab-container {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .fab-main-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .fab-option-button {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3em;
+    }
+
+    .modal-content {
+        width: 90%;
+        height: auto;
+        padding: 15px;
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    /* All modals white */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 450px;
+    height: auto;
+    /* Allow height to adjust to content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    gap: 15px;
+    color: #4D4318;
+    /* Default text color for modals */
+    max-width: 90%;
+}
+
+.modal-content h2 {
+    font-family: 'Josefin Sans', sans-serif;
+    /* Use Josefin Sans from import */
+    font-weight: 700;
+    color: black;
+}
+
+.modal-content .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.modal-content .close-button:hover,
+.modal-content .close-button:focus {
+    color: black;
+}
+
+
+/* Weather Modal Content Specific Styles (from provided HTML, reinforced) */
+#weatherModal .modal-content {
+    height: auto;
+    min-height: 250px;
+    width: fit-content;
+    max-width: 320px;
+    /* Max width from provided widget CSS */
+    padding: 1rem;
+    color: #4D4318;
+}
+
+#weatherModal .modal-content h2 {
+    font-family: 'Josefin Sans Bold', sans-serif;
+    margin: 0 0 1.5rem 0;
+    font-size: 1.8rem;
+    color: #4D4318;
+    text-align: center;
+}
+
+/* Main weather display section */
+#weatherModal .main-weather-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#weatherModal .weather-icon-main {
+    flex-shrink: 0;
+}
+
+#weatherModal .weather-icon-main img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+#weatherModal .main-weather-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+#weatherModal #main-temp {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #D65F02;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+}
+
+#weatherModal #description-text {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4D4318;
+    line-height: 1;
+}
+
+/* Secondary weather observations in one line */
+#weatherModal .secondary-observations {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    padding: 0 0.5rem;
+}
+
+#weatherModal .secondary-observations div {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    white-space: nowrap;
+    margin: 0 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4D4318;
+}
+
+#weatherModal .secondary-observations div i {
+    font-size: 1.5rem;
+    color: #4D4318;
+}
+
+#weatherModal .divider {
+    border-top: 1px solid #ccc;
+    margin: 1rem 0;
+}
+
+/* Warning Styles */
+#weatherModal .weather-warning {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 1.4rem;
+    color: #D65F02;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #D65F02;
+    border-radius: 4px;
+    background-color: rgba(214, 95, 2, 0.05);
+    margin-bottom: 0.75rem;
+    text-align: left;
+}
+
+#weatherModal .weather-warning p {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+#weatherModal .weather-warning ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+    list-style: disc;
+    text-align: left;
+}
+
+#weatherModal .weather-warning li {
+    margin-bottom: 0.1rem;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: #4D4318;
+    line-height: 1.3;
+    text-align: left;
+}
+
+
+/* Water Modal Specific Styles */
+#waterModal .modal-content {
+    background-color: white;
+    color: black;
+    font-weight: normal;
+}
+
+#waterModal .modal-content h2 {
+    font-family: 'Josefin Sans Bold', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: black;
+}
+
+#waterModal .modal-content .stats-line b,
+#waterModal .modal-content p {
+    color: black;
+    font-weight: bold;
+}
+
+#waterModal .modal-content .text-sm {
+    font-size: 0.8em;
+    font-weight: normal;
+}
+
+/* Wayfinder Modal Content Specific Background */
+#wayfinderModal .modal-content {
+    background-color: white !important;
+    /* Make wayfinder modal white */
+    height: auto;
+    min-height: 300px;
+    width: 400px;
+    max-width: 90%;
+}
+
+/* Card Styles within Wayfinder Modal */
+#wayfinderModal .card {
+    /* Target cards specifically within wayfinder modal */
+    background: #F3EECE;
+    /* New background color for cards */
+    color: #4D4318;
+    /* New text color for cards */
+}
+
+#wayfinderModal .card .img-icon {
+    /* Existing styles, no change needed for image itself */
+}
+
+#wayfinderModal .card .h1 {
+    color: #4D4318;
+    /* Ensure h1 inside card is correct color */
+}
+
+#wayfinderModal .card .span {
+    color: #4D4318;
+    /* Ensure span inside card is correct color */
+}
+
+#wayfinderModal .card .p {
+    color: #4D4318;
+    /* Ensure p inside card is correct color */
+}
+
+
+#wayfinderModal .modal-content .cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    align-items: center;
+}
+
+/* Provided .box button CSS (for water modal) */
+.box {
+    height: 200px;
+    width: 200px;
+    border: none;
+    border-radius: 50%;
+    position: relative;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    cursor: pointer;
+    font: 16px/24px Arial, sans-serif;
+    background-color: #2d4db8;
+    transition: box-shadow 0.4s ease, background-color 0.4s ease, color 0.4s ease;
+    box-shadow:
+        0 0 2px 0 rgba(73, 115, 255, 0.1),
+        0 0 4px 0 rgba(73, 115, 255, 0.2),
+        0 0 6px 0 rgba(73, 115, 255, 0.3),
+        0 0 8px 0 rgba(73, 115, 255, 0.4),
+        0 0 12px 0 rgba(73, 115, 255, 0.5),
+        0 0 18px 0 rgba(73, 115, 255, 0.6);
+}
+
+.box:hover::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    animation: splash 1s forwards;
+    animation-iteration-count: infinite;
+}
+
+.box:hover {
+    background-color: #4973ff;
+}
+
+.box span {
+    color: #fff;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.box i {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 200px;
+    background-color: inherit;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.box i:after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: 35%;
+    /* Default: water at bottom */
+    left: 50%;
+    border-radius: 40%;
+    background-color: rgba(20, 20, 20, 0.5);
+    transform: translate(-50%, -75%) rotate(0deg);
+}
+
+.box.is-holding i:after {
+    top: -45%;
+    animation: animate 15s linear infinite;
+    transition: top 15s linear;
+}
+
+@keyframes animate {
+    0% {
+        transform: translate(-50%, -75%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -75%) rotate(360deg);
+    }
+}
+
+@keyframes splash {
+    0% {
+        transform: translate(-10%, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -30px) scale(1);
+        opacity: 0;
+    }
+}
+
+.intake-feedback {
+    display: inline-flex;
+    align-items: center;
+    color: #4D4318;
+    /* Changed color to #4D4318 */
+    font-weight: bold;
+    margin-left: 8px;
+    opacity: 0;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.intake-feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stats-line {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+}
+
+.stats-line>span {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.card {
+    width: 100%;
+    max-width: 290px;
+    height: 70px;
+    background: #4D4318;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    backdrop-filter: blur(10px);
+    transition: 0.5s ease-in-out;
+    color: white;
+    font-family: 'Public Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.card .img-icon {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    border-radius: 10px;
+    object-fit: contain;
+    background-color: transparent;
+}
+
+.textBox {
+    width: calc(100% - 90px);
+    margin-left: 10px;
+}
+
+.textContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.span {
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.h1 {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.p {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 12px;
+    font-weight: lighter;
+    margin: 0;
+    text-align: left;
+}
+
+/* CARD STACK */
+.mighty-card-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    padding: 0 20px;
+}
+
+.mighty-card-row .blocks-button__container {
+    flex: 1 1 calc(33.333% - 3rem);
+    max-width: 350px;
+}
+
+@media (max-width: 1024px) {
+    .mighty-card-row .blocks-button__container {
+        flex: 1 1 calc(50% - 3rem);
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .mighty-card-row .blocks-button__container {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* Tag chips */
+#rise-tag-bar {
+    position: sticky !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999 !important;
+    transform: translateY(0) !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #36150f !important;
+    height: auto !important;
+    align-items: center;
+    overflow-x: auto !important;
+    padding: 12px;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+#rise-tag-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.tag-chip {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    background: #36150f !important;
+    color: white !important;
+    /* Changed to 36150f for normal state */
+    border: 2px solid #D65F02 !important;
+    border-radius: 999px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    /* Added bold for normal state */
+    cursor: pointer !important;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+    pointer-events: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tag-chip:hover {
+    background: #F3EECE !important;
+    color: #D65F02 !important;
+    font-weight: bold !important;
+    /* Added bold for hover state */
+}
+
+.tag-chip.active {
+    background: #D65F02 !important;
+    color: white !important;
+    border-color: #D65F02 !important;
+    font-weight: bold !important;
+    /* Added bold for active state */
+}
+
+/* This hides Rise's default grey navigation header */
+.nav-header {
+    display: none !important;
+}
+
+/* This targets the container Rise puts around the code block */
+/* Keep this if you want the block background itself to be dark brown,
+but it's not strictly necessary for the nav bar's background. */
+.block-web {
+    background: #36150f !important;
+    /* This new line is the key fix. It prevents Rise from hiding sticky elements inside. */
+    overflow: visible !important;
+}

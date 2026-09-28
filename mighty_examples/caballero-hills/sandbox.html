@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caballero Hills — local sandbox</title>
+
+  <!-- The extracted course CSS, byte-for-byte as it sits in the Mighty Custom Code powerup -->
+  <link rel="stylesheet" href="custom.css" />
+
+  <style>
+    /* ---- Sandbox-only chrome. None of this exists in Rise. ---- */
+
+    /* custom.css:4-9 sets html,body{height:100%}. In Rise that is harmless because Rise
+       scrolls an inner container, not the body. Here the body IS the scroll container, and a
+       100%-tall body caps how far #rise-tag-bar's sticky positioning can travel, so the bar
+       scrolls away after one viewport. Override restores the pinned-at-top behaviour you see
+       in the live course. */
+    html, body { height: auto; min-height: 100%; }
+
+    .sb-note {
+      max-width: 760px; margin: 0 auto 24px; padding: 14px 18px;
+      background: #fff8e1; border: 1px solid #e0c874; border-radius: 10px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .sb-note code { background: #f0e6c8; padding: 1px 5px; border-radius: 4px; }
+    .sb-lesson-links { max-width: 760px; margin: 0 auto 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .sb-lesson-links a {
+      font-size: 13px; padding: 6px 12px; border-radius: 999px;
+      border: 1px dashed #9a9a9a; color: #4D4318; text-decoration: none;
+    }
+    .sb-lesson-links a.current { border-style: solid; background: #fff; font-weight: 700; }
+    #lesson-root { max-width: 760px; margin: 0 auto; padding-bottom: 60vh; }
+    .block {
+      background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 28px;
+      min-height: 62vh; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .block h2 { margin-top: 0; font-family: 'Josefin Sans', sans-serif; color: #D65F02; }
+    .block .block-id { font-size: 11px; color: #999; font-family: ui-monospace, monospace; }
+    .sb-status {
+      position: fixed; bottom: 14px; left: 14px; z-index: 99999;
+      background: rgba(54,21,15,.92); color: #F3EECE; font-size: 12px;
+      font-family: ui-monospace, monospace; padding: 8px 12px; border-radius: 8px;
+      max-width: 42vw; pointer-events: none; line-height: 1.5;
+    }
+    /* The wayfinder modal clicks a[href*="#/lessons/<id>"]. In Rise that link lives in the
+       sidebar. Here it lives in .sb-lesson-links, which is real and visible. */
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div class="sb-note">
+      <strong>Sandbox — not Rise.</strong> Mock blocks carry the same <code>data-block-id</code>
+      values the real course uses, so <code>custom.js</code> runs unmodified.
+      Try: click the chips up top, scroll to watch the active chip follow (scroll spy),
+      press <code>←</code>/<code>→</code> while a chip is focused, hit the orange
+      <code>+</code> FAB bottom-right → map pin opens "Switch trail?" which really
+      re-routes the hash and rebuilds the bar with that lesson's chips.
+    </div>
+
+    <nav class="sb-lesson-links" aria-label="Mock Rise sidebar"></nav>
+    <main id="lesson-root"></main>
+  </div>
+
+  <div class="sb-status" id="sb-status"></div>
+
+  <!-- ---- Mock Rise router. Must run BEFORE custom.js so lesson 1 is already in the DOM
+       when the nav-bar IIFE does its initial querySelector sweep. ---- -->
+  <script>
+    (function () {
+      // Lesson hash IDs are the ones hard-coded in the wayfinder modal (custom.js:560-582).
+      // Block IDs are the ones in LESSON_NAV_CONFIGS (custom.js:844-874).
+      const LESSONS = {
+        "1cRvz-NayAzEEiEjd3Lw7r6NBuSo1NOd": {
+          name: "Sundance Loop",
+          // For lesson 1 the reference block is also the first chip target.
+          refBlock: null,
+          sections: [
+            ["cmd6nwd6x009d35bo5rz2985v", "Gear",     "Welcome to Sundance Loop", "Your pack checklist. 1+ quart of water per hour, wide-brimmed hat, sunglasses, breathable shirt."],
+            ["cmd85civq00yw357estm4ib2k", "Hazards",  "Trail hazards",            "Loose sandstone on the north shelf. Flash-flood channel at mile 1.8."],
+            ["cmd859vk000v3357e1ttekl2s", "Health",   "Health hazards",           "Heat illness, dehydration, hyponatremia."],
+            ["cmd6qs8dx00si357cnuw9r1pc", "Diagnose", "Diagnose",                 "Hot and dry skin plus confusion means heat stroke, not exhaustion."],
+            ["cmd6qumhq00wq357ce6qll503", "Treat",    "Treatment",                "Shade, cool, hydrate. Cold packs to neck, armpits, groin."],
+            ["cmd8540tx00rh357eck5hxb14", "HELP!",    "Emergency",                "Contact 911. Give GPS coordinates. Whistle or phone light to attract attention."]
+          ],
+          // Block 'cmd65zg1f...' is the one the card-image swapper (custom.js:726) rewrites.
+          cardBlock: "cmd65zg1f00jc357dyq4nwycz"
+        },
+        "kXGUJcMKOVZL5D-xuK_jwa94zk1dKxqa": {
+          name: "Coyote Crush",
+          refBlock: "oo4jTIDlKZN2OPv3amkr5UoUtGvtjK20",
+          sections: [
+            ["zUnO7mELQHHPa9d7WH77Rpcky94K6_X3", "Gear",     "Coyote Crush gear",   "Family route. Pack extra water for kids."],
+            ["NICUXp6XxNREGVqVw1YuI3MIrKzcZQX5", "Hazards",  "Trail hazards",       "Cholla segments along the wash. Watch bare ankles."],
+            ["NCFmH_5iSAe_p2ZiJhXv3qbGjQ4uF00K", "Health",   "Health hazards",      "Kids overheat faster than adults."],
+            ["gk_h2_Q35QIg2UxOcf8ow9hjA81M3-BZ", "Diagnose", "Diagnose",            "Check capillary refill and skin turgor."],
+            ["HLFOcGqf0bD912aG_meaiS85wC8QTO8o", "Treat",    "Treatment",           "Shade first, then small sips, then reassess."],
+            ["_VLy-eG9zilMl-Ibzjo5IS8Y1mjgGAON", "HELP!",    "Emergency",           "Trailhead is 40 minutes out. Call early."]
+          ],
+          cardBlock: null
+        },
+        "Jdt1Nwo5OsHomYipfbHgJSs7X0XW7aD-": {
+          name: "Hawkspur",
+          refBlock: "-1-M1zzNOakUXqjKMXKRrmy7LppEo-u8",
+          sections: [
+            ["MaSge_QCBsAVOdiLdvjM-hULNI9CMKpx", "Gear",     "Hawkspur gear",   "Expert route. 5+ miles, >1,000ft gain. Headlamp mandatory."],
+            ["nSyqkv4vIXkqwNL7SKMFw-eFwmXDbGIJ", "Hazards",  "Trail hazards",   "Exposed ridge scramble. No shade after mile 3."],
+            ["TlyEpjwknO2BRtkgM5vFxXxHjKQdC4AN", "Health",   "Health hazards",  "Altitude plus heat. Compounding load."],
+            ["B1lHv9AXiOG27h6pQvgfLIaFKGnpEKUH", "Diagnose", "Diagnose",        "Ataxia on the ridge is a turn-around signal."],
+            ["I-0EKA5iHV6Po1I_RTF-86H5CFzXi2y1", "Treat",    "Treatment",       "Descend. Everything else is secondary."],
+            ["zcS1-EsymQceGsa5DUEk9CPgK8g0FqyD", "HELP!",    "Emergency",       "No cell coverage past the saddle. Carry a beacon."]
+          ],
+          cardBlock: null
+        }
+      };
+
+      const DEFAULT_LESSON = "1cRvz-NayAzEEiEjd3Lw7r6NBuSo1NOd";
+      const root = document.getElementById("lesson-root");
+      const linkBar = document.querySelector(".sb-lesson-links");
+      const status = document.getElementById("sb-status");
+
+      // Mock sidebar links. custom.js:614 looks for exactly this selector shape.
+      linkBar.innerHTML = Object.entries(LESSONS)
+        .map(([id, l]) => `<a href="#/lessons/${id}" data-lesson="${id}">${l.name}</a>`)
+        .join("");
+
+      const currentLessonId = () => {
+        const m = location.hash.match(/#\/lessons\/([^/?]+)/);
+        return (m && LESSONS[m[1]]) ? m[1] : DEFAULT_LESSON;
+      };
+
+      // Reproduces the DOM shape the card swapper (custom.js:726-836) expects.
+      const cardBlockHtml = (blockId) => `
+        <div class="block" data-block-id="${blockId}">
+          <h2>Pick a trail</h2>
+          <div class="block-id">data-block-id="${blockId}" — rewritten by the card-image swapper</div>
+          <div class="blocks-button--right">
+            ${[1, 2, 3].map(i => `
+              <div class="blocks-button__container">
+                <h3 class="blocks-button__title">Trail option ${i}</h3>
+                <p class="blocks-button__description">Mock button-stack item ${i}. The swapper pulls
+                  these out, wraps each in a card, and prepends a hosted image.</p>
+                <button class="blocks-button__button">Choose</button>
+              </div>`).join("")}
+          </div>
+        </div>`;
+
+      const render = () => {
+        const id = currentLessonId();
+        const lesson = LESSONS[id];
+
+        let html = "";
+        // Lessons 2 and 3 key their nav config off a reference block that is NOT a chip target,
+        // so it has to exist in the DOM on its own.
+        if (lesson.refBlock) {
+          html += `<div class="block" data-block-id="${lesson.refBlock}" style="min-height:auto">
+                     <h2>${lesson.name}</h2>
+                     <div class="block-id">reference block — data-block-id="${lesson.refBlock}"</div>
+                   </div>`;
+        }
+        html += lesson.sections.map(([blockId, label, title, body]) => `
+          <div class="block" data-block-id="${blockId}">
+            <h2>${title}</h2>
+            <div class="block-id">chip "${label}" → data-block-id="${blockId}"</div>
+            <p>${body}</p>
+          </div>`).join("");
+        root.innerHTML = html;
+
+        // The card block mounts late on purpose. custom.js:819 calls applyResponsiveCardStyles(),
+        // which is not defined anywhere in the file. If that block is already in the DOM when
+        // custom.js evaluates, the ReferenceError aborts the whole script and the nav bar IIFE
+        // (custom.js:839) never runs. Mounting it after evaluation confines the throw to the
+        // MutationObserver callback — which is what happens in the real course, where Rise
+        // mounts blocks asynchronously. See README "Known limitations".
+        if (lesson.cardBlock) {
+          setTimeout(() => root.insertAdjacentHTML("beforeend", cardBlockHtml(lesson.cardBlock)), 400);
+        }
+
+        linkBar.querySelectorAll("a").forEach(a =>
+          a.classList.toggle("current", a.dataset.lesson === id));
+
+        window.scrollTo(0, 0);
+        updateStatus(id, lesson);
+      };
+
+      const updateStatus = (id, lesson) => {
+        const bar = document.getElementById("rise-tag-bar");
+        const active = document.querySelector("#rise-tag-bar .tag-chip.active");
+        status.innerHTML =
+          `lesson: ${lesson.name}<br>` +
+          `hash: #/lessons/${id.slice(0, 10)}…<br>` +
+          `#rise-tag-bar: ${bar ? bar.querySelectorAll(".tag-chip").length + " chips" : "absent"}<br>` +
+          `active chip: ${active ? active.textContent : "—"}`;
+      };
+
+      window.addEventListener("hashchange", render);
+      render();
+      setInterval(() => updateStatus(currentLessonId(), LESSONS[currentLessonId()]), 400);
+    })();
+  </script>
+
+  <!-- The extracted course JS, byte-for-byte as it sits in the Mighty Custom Code powerup.
+       Loads Font Awesome itself (custom.js:11) and hits api.weather.gov for the weather modal. -->
+  <script src="custom.js"></script>
+</body>
+</html>
